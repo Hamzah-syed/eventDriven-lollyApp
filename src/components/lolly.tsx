@@ -1,6 +1,12 @@
-import React from "react";
+import React, { FC } from "react";
 
-const Lolly = () => {
+interface props {
+  flavourTop: string;
+  flavourMiddle: string;
+  flavourBottom: string;
+}
+
+const Lolly: FC<props> = ({ flavourTop, flavourMiddle, flavourBottom }) => {
   return (
     <svg
       className="lollipop"
@@ -63,15 +69,13 @@ const Lolly = () => {
           </mask>
           <use
             className="lollyBottom"
-            fill="red"
-            // fill={fillLollyBottom}
+            fill={flavourBottom}
             fillRule="nonzero"
             href="#path-1"
           ></use>
           <rect
             className="lollyTop"
-            fill="blue"
-            // fill={fillLollyTop}
+            fill={flavourTop}
             fillRule="nonzero"
             mask="url(#mask-2)"
             x="-25"
@@ -81,8 +85,7 @@ const Lolly = () => {
           ></rect>
           <rect
             className="lollyMiddle"
-            fill="green"
-            // fill={fillLollyMiddle}
+            fill={flavourMiddle}
             fillRule="nonzero"
             mask="url(#mask-2)"
             x="-29"

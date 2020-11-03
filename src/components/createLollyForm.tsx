@@ -1,47 +1,82 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+//graphql
+import { useCreateLollyMutation } from "../generated/graphql";
 //components
 import Lolly from "./lolly";
-import { textChangeRangeIsUnchanged } from "typescript";
 import ErrorMsg from "../utils/errorMsg";
+//interfaces
+import { FlavoursType } from "../interfaces/flavoursType";
+//styled component
+import { Button } from "../utils/button";
+import { Box } from "../utils/box";
 
 const initialValues = {
-  title: "",
-  url: "",
-  description: "",
+  to: "",
+  message: "",
+  from: "",
 };
 
 const validationSchema = Yup.object({
-  title: Yup.string().required("Title is required"),
+  to: Yup.string().required("Recipient name is required"),
 
-  url: Yup.string()
-    .matches(
-      /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/,
-      "Enter correct url!"
-    )
-    .required("Website url is required"),
-  description: Yup.string().required("Description is Required"),
+  message: Yup.string()
+    .required("Message is required")
+    .max(500, "Message should be less than 500 character"),
+  from: Yup.string().required("Sender name is Required"),
 });
 
 const CreateLollyForm = () => {
-  const onSubmit = (values, actions) => {
-    console.log(values);
+  const [createLolly, { loading }] = useCreateLollyMutation();
+  const [flavours, setFlavours] = useState<FlavoursType>({
+    flavourTop: "#A4193B",
+    flavourMiddle: "#DF4343",
+    flavourBottom: "#DB2929",
+  });
+
+  const onSubmit = async (values, actions) => {
+    const result = await createLolly({
+      variables: {
+        to: values.to,
+        message: values.message,
+        from: values.from,
+        flavourTop: flavours.flavourTop,
+        flavourMiddle: flavours.flavourMiddle,
+        flavourBottom: flavours.flavourBottom,
+      },
+    });
+
+    await actions.resetForm({
+      values: {
+        to: "",
+        message: "",
+        from: "",
+      },
+    });
+    console.log(result);
   };
 
   return (
     <div className="createLollyWrapper">
-      <Lolly />
+      <Lolly
+        flavourTop={flavours.flavourTop}
+        flavourMiddle={flavours.flavourMiddle}
+        flavourBottom={flavours.flavourBottom}
+      />
       <div className="colorSelectorContainer">
         <label htmlFor="topFlavor" className="colorPickerLabel">
           <input
             className="colorPicker"
-            // value={colorTop}
+            value={flavours.flavourTop}
             type="color"
             name="topFlavor"
             id="topFlavor"
             onChange={(e) => {
-              //   setcolorTop(e.target.value)
+              setFlavours({
+                ...flavours,
+                flavourTop: e.target.value,
+              });
             }}
           ></input>
         </label>
@@ -49,25 +84,31 @@ const CreateLollyForm = () => {
         <label htmlFor="midFlavor" className="colorPickerLabel">
           <input
             className="colorPicker"
-            // // value={colorMid}
+            value={flavours.flavourMiddle}
             type="color"
             name="midFlavor"
             id="midFlavor"
-            // onChange={e => {
-            // //   setcolorMid(e.target.value)
-            // }}
+            onChange={(e) => {
+              setFlavours({
+                ...flavours,
+                flavourMiddle: e.target.value,
+              });
+            }}
           ></input>
         </label>
 
         <label htmlFor="botFlavor" className="colorPickerLabel">
           <input
             className="colorPicker"
-            // value={colorBot}
+            value={flavours.flavourBottom}
             type="color"
             name="botFlavor"
             id="botFlavor"
             onChange={(e) => {
-              //   setcolorBot(e.target.value)
+              setFlavours({
+                ...flavours,
+                flavourBottom: e.target.value,
+              });
             }}
           ></input>
         </label>
@@ -81,40 +122,47 @@ const CreateLollyForm = () => {
         >
           <Form>
             <p className="textFeildLabel">to</p>
-            <div style={{ paddingBottom: "12px" }}>
+            <div style={{ paddingBottom: "8px" }}>
               <Field
-                name="title"
+                name="to"
                 type="text"
                 label="Title"
                 className="textFeild"
               />
-              <ErrorMessage component={ErrorMsg} name="title" />
+              <ErrorMessage component={ErrorMsg} name="to" />
             </div>
-            <div style={{ paddingBottom: "12px" }}>
+            <div style={{ paddingBottom: "8px" }}>
               <p className="textFeildLabel">say something nice</p>
               <Field
                 style={{ resize: "none" }}
                 className="textFeild"
                 as="textarea"
                 rows="7"
-                name="title"
+                name="message"
                 type="text"
                 label="Title"
               />
-              <ErrorMessage component={ErrorMsg} name="title" />
+              <ErrorMessage component={ErrorMsg} name="message" />
             </div>
             <div style={{ paddingBottom: "12px" }}>
               <p className="textFeildLabel">from</p>
               <Field
-                name="title"
+                name="from"
                 type="text"
                 label="Title"
                 className="textFeild"
               />
-              <ErrorMessage component={ErrorMsg} name="title" />
+              <ErrorMessage component={ErrorMsg} name="from" />
             </div>
-
-            <button type="submit">Submit</button>
+            <Box pt={"4px"}>
+              <Button
+                shake={loading ? true : false}
+                type="submit"
+                disabled={loading ? true : false}
+              >
+                {loading ? "Freezing.." : "Freez!"}
+              </Button>
+            </Box>
           </Form>
         </Formik>
       </div>

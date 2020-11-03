@@ -1,9 +1,7 @@
-import { gql } from "@apollo/client";
-import * as Apollo from "@apollo/client";
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = {
-  [K in keyof T]: T[K];
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -15,112 +13,96 @@ export type Scalars = {
   Upload: any;
 };
 
-export type Bookmark = {
-  __typename?: "Bookmark";
-  id: Scalars["ID"];
-  title: Scalars["String"];
-  description: Scalars["String"];
-  createdAt: Scalars["String"];
-  url: Scalars["String"];
-};
-
 export enum CacheControlScope {
-  Public = "PUBLIC",
-  Private = "PRIVATE",
+  Public = 'PUBLIC',
+  Private = 'PRIVATE'
 }
 
+export type Lolly = {
+  __typename?: 'Lolly';
+  to: Scalars['String'];
+  message: Scalars['String'];
+  from: Scalars['String'];
+  flavourTop: Scalars['String'];
+  flavourMiddle: Scalars['String'];
+  flavourBottom: Scalars['String'];
+  slug: Scalars['String'];
+};
+
 export type Mutation = {
-  __typename?: "Mutation";
-  add_bookmark?: Maybe<Bookmark>;
-  delete_bookmark?: Maybe<Bookmark>;
+  __typename?: 'Mutation';
+  craeteLolly?: Maybe<Lolly>;
 };
 
-export type MutationAdd_BookmarkArgs = {
-  title: Scalars["String"];
-  description: Scalars["String"];
-  url: Scalars["String"];
-};
 
-export type MutationDelete_BookmarkArgs = {
-  id: Scalars["ID"];
+export type MutationCraeteLollyArgs = {
+  to: Scalars['String'];
+  message: Scalars['String'];
+  from: Scalars['String'];
+  flavourTop: Scalars['String'];
+  flavourMiddle: Scalars['String'];
+  flavourBottom: Scalars['String'];
 };
 
 export type Query = {
-  __typename?: "Query";
-  bookmarks?: Maybe<Array<Maybe<Bookmark>>>;
+  __typename?: 'Query';
+  hello: Scalars['String'];
 };
 
-export type BookmarkListQueryVariables = Exact<{ [key: string]: never }>;
 
-export type BookmarkListQuery = { __typename?: "Query" } & {
-  bookmarks?: Maybe<
-    Array<
-      Maybe<
-        { __typename?: "Bookmark" } & Pick<
-          Bookmark,
-          "id" | "description" | "title" | "createdAt" | "url"
-        >
-      >
-    >
-  >;
-};
+export type CreateLollyMutationVariables = Exact<{
+  to: Scalars['String'];
+  message: Scalars['String'];
+  from: Scalars['String'];
+  flavourTop: Scalars['String'];
+  flavourMiddle: Scalars['String'];
+  flavourBottom: Scalars['String'];
+}>;
 
-export const BookmarkListDocument = gql`
-  query bookmarkList {
-    bookmarks {
-      id
-      description
-      title
-      createdAt
-      url
-    }
+
+export type CreateLollyMutation = (
+  { __typename?: 'Mutation' }
+  & { craeteLolly?: Maybe<(
+    { __typename?: 'Lolly' }
+    & Pick<Lolly, 'slug'>
+  )> }
+);
+
+
+export const CreateLollyDocument = gql`
+    mutation createLolly($to: String!, $message: String!, $from: String!, $flavourTop: String!, $flavourMiddle: String!, $flavourBottom: String!) {
+  craeteLolly(to: $to, message: $message, from: $from, flavourTop: $flavourTop, flavourMiddle: $flavourMiddle, flavourBottom: $flavourBottom) {
+    slug
   }
-`;
+}
+    `;
+export type CreateLollyMutationFn = Apollo.MutationFunction<CreateLollyMutation, CreateLollyMutationVariables>;
 
 /**
- * __useBookmarkListQuery__
+ * __useCreateLollyMutation__
  *
- * To run a query within a React component, call `useBookmarkListQuery` and pass it any options that fit your needs.
- * When your component renders, `useBookmarkListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useCreateLollyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLollyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useBookmarkListQuery({
+ * const [createLollyMutation, { data, loading, error }] = useCreateLollyMutation({
  *   variables: {
+ *      to: // value for 'to'
+ *      message: // value for 'message'
+ *      from: // value for 'from'
+ *      flavourTop: // value for 'flavourTop'
+ *      flavourMiddle: // value for 'flavourMiddle'
+ *      flavourBottom: // value for 'flavourBottom'
  *   },
  * });
  */
-export function useBookmarkListQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    BookmarkListQuery,
-    BookmarkListQueryVariables
-  >
-) {
-  return Apollo.useQuery<BookmarkListQuery, BookmarkListQueryVariables>(
-    BookmarkListDocument,
-    baseOptions
-  );
-}
-export function useBookmarkListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    BookmarkListQuery,
-    BookmarkListQueryVariables
-  >
-) {
-  return Apollo.useLazyQuery<BookmarkListQuery, BookmarkListQueryVariables>(
-    BookmarkListDocument,
-    baseOptions
-  );
-}
-export type BookmarkListQueryHookResult = ReturnType<
-  typeof useBookmarkListQuery
->;
-export type BookmarkListLazyQueryHookResult = ReturnType<
-  typeof useBookmarkListLazyQuery
->;
-export type BookmarkListQueryResult = Apollo.QueryResult<
-  BookmarkListQuery,
-  BookmarkListQueryVariables
->;
+export function useCreateLollyMutation(baseOptions?: Apollo.MutationHookOptions<CreateLollyMutation, CreateLollyMutationVariables>) {
+        return Apollo.useMutation<CreateLollyMutation, CreateLollyMutationVariables>(CreateLollyDocument, baseOptions);
+      }
+export type CreateLollyMutationHookResult = ReturnType<typeof useCreateLollyMutation>;
+export type CreateLollyMutationResult = Apollo.MutationResult<CreateLollyMutation>;
+export type CreateLollyMutationOptions = Apollo.BaseMutationOptions<CreateLollyMutation, CreateLollyMutationVariables>;

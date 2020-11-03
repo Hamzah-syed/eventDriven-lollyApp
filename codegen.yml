@@ -1,5 +1,5 @@
 overwrite: true
-schema: "https://faunadb-serverless-bookmarking-app.netlify.app/.netlify/functions/bookmarkgql"
+schema: "http://localhost:8888/.netlify/functions/lollyApi"
 documents: "src/**/*.{ts,tsx}"
 generates:
   src/generated/graphql.tsx:

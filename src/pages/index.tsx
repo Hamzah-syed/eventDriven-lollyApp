@@ -11,11 +11,26 @@ const Index = () => {
     <div>
       <Header />
       <div className="listLollies">
-        <Lolly />
-        <Lolly />
-        <Lolly />
-        <Lolly />
-        <Lolly />
+        <Lolly
+          flavourTop="#C25671"
+          flavourMiddle="#D93A3A"
+          flavourBottom="#D52020"
+        />
+        <Lolly
+          flavourTop="#C25671"
+          flavourMiddle="#D93A3A"
+          flavourBottom="#D52020"
+        />
+        <Lolly
+          flavourTop="#C25671"
+          flavourMiddle="#D93A3A"
+          flavourBottom="#D52020"
+        />
+        <Lolly
+          flavourTop="#C25671"
+          flavourMiddle="#D93A3A"
+          flavourBottom="#D52020"
+        />
       </div>
       <button
         onClick={() => {

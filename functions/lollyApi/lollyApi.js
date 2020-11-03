@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require("apollo-server-lambda"),
   faunadb = require("faunadb"),
+  shortId = require("shortId"),
   q = faunadb.query;
 
 require("dotenv").config();
@@ -13,14 +14,13 @@ const typeDefs = gql`
     hello: String!
   }
   type Lolly {
-    id: ID!
     to: String!
     message: String!
     from: String!
     flavourTop: String!
     flavourMiddle: String!
     flavourBottom: String!
-    lollyPath: String!
+    slug: String!
   }
   type Mutation {
     craeteLolly(
@@ -44,12 +44,15 @@ const resolvers = {
   Mutation: {
     craeteLolly: async (_, args) => {
       try {
+        const slug = shortId.generate();
+        args.slug = slug;
+
         const result = await Client.query(
           q.Create(q.Collection("lollies"), {
             data: args,
           })
         );
-        console.log(result);
+
         return result.data;
       } catch (error) {
         return error.toString();
