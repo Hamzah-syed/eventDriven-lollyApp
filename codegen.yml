@@ -1,0 +1,9 @@
+overwrite: true
+schema: "https://faunadb-serverless-bookmarking-app.netlify.app/.netlify/functions/bookmarkgql"
+documents: "src/**/*.{ts,tsx}"
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
