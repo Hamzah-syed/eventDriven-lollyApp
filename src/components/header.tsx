@@ -1,14 +1,20 @@
 import React from "react";
 import { navigate } from "gatsby";
 //components
-import Lolly from "./lolly";
+import { Box } from "../utils/box";
 
 const Header = () => {
   return (
     <div>
-      <div className="container">
-        <h1>Lolly</h1>
-        <h3>some text</h3>
+      <div className="">
+        <Box pt="50px" pb="50px">
+          <h1 className="headerContent" style={{ fontSize: "50px" }}>
+            virtual lollipop
+          </h1>
+          <h3 className="headerContent">
+            because we all know someone who deserves some sugar.
+          </h3>
+        </Box>
       </div>
     </div>
   );

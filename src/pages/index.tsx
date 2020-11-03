@@ -5,6 +5,8 @@ import "../assets/css/main.css";
 //components
 import Header from "../components/header";
 import Lolly from "../components/lolly";
+import { Button } from "../utils/button";
+import { Box } from "../utils/box";
 
 const Index = () => {
   return (
@@ -12,33 +14,38 @@ const Index = () => {
       <Header />
       <div className="listLollies">
         <Lolly
-          flavourTop="#C25671"
-          flavourMiddle="#D93A3A"
+          flavourTop="#C35671"
+          flavourMiddle="#E93A3A"
           flavourBottom="#D52020"
         />
         <Lolly
-          flavourTop="#C25671"
-          flavourMiddle="#D93A3A"
-          flavourBottom="#D52020"
+          flavourTop="#C26671"
+          flavourMiddle="#D94A3A"
+          flavourBottom="#D53020"
         />
         <Lolly
-          flavourTop="#C25671"
-          flavourMiddle="#D93A3A"
-          flavourBottom="#D52020"
+          flavourTop="#C22671"
+          flavourMiddle="#D92A3A"
+          flavourBottom="#D51020"
         />
         <Lolly
-          flavourTop="#C25671"
-          flavourMiddle="#D93A3A"
-          flavourBottom="#D52020"
+          flavourTop="#C26671"
+          flavourMiddle="#D92A3A"
+          flavourBottom="#D53020"
         />
       </div>
-      <button
-        onClick={() => {
-          navigate("/createLolly");
-        }}
-      >
-        create Lolly
-      </button>
+      <Box pt="90px">
+        <div style={{ margin: "0 auto", textAlign: "center" }}>
+          <button
+            className="mainButton"
+            onClick={() => {
+              navigate("/createLolly");
+            }}
+          >
+            freez Lolly
+          </button>
+        </div>
+      </Box>
     </div>
   );
 };

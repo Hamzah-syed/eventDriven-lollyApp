@@ -10,11 +10,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   box-sizing: border-box;
 }
-.container {
-  width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-}
+
 .listLollies {
   display: flex;
   flex-direction: row;
@@ -25,18 +21,11 @@ body {
 .lollyFormDiv .lollipop {
   height: 300px;
 }
-
-.lollyFormDiv {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.lollyFlavourDiv {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.headerContent {
+  color: white;
+  font-family: Yellowtail, cursive;
+  text-align: center;
+  font-weight: 300;
 }
 .createLollyWrapper {
   display: flex;
@@ -44,7 +33,9 @@ body {
   justify-content: center;
   align-items: center;
   margin-bottom: 1rem;
-  margin-top: 2rem;
+  margin-top: 3rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .colorSelectorContainer {
@@ -74,7 +65,7 @@ body {
   padding: 30px 30px;
   border-radius: 8px;
   width: 100%;
-  max-width: 250px;
+  max-width: 330px;
 }
 .textFeild {
   padding: 8px 8px;
@@ -97,4 +88,34 @@ body {
   color: rgb(221, 50, 50);
   font-size: 15px;
   padding-top: 2px;
+}
+.mainButton {
+  width: 200px;
+  font-size: 24px;
+  border: 1px solid #cbd5e0;
+  text-transform: capitalize;
+  padding: 10px 10px;
+  border-radius: 50px;
+  color: white;
+  background-color: transparent;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.mainButton:hover {
+  background-color: #4c51bf;
+}
+.mainButton:focus {
+  outline: none;
+}
+
+@media only screen and (max-width: 768px) {
+  .createLollyWrapper {
+    flex-direction: column;
+  }
+  .colorSelectorContainer {
+    flex-direction: row;
+  }
+  .lollyFormWrapper {
+    margin-top: 30px;
+  }
 }

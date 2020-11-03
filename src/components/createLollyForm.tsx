@@ -121,18 +121,19 @@ const CreateLollyForm = () => {
           validationSchema={validationSchema}
         >
           <Form>
-            <p className="textFeildLabel">to</p>
+            <p className="textFeildLabel">to:</p>
             <div style={{ paddingBottom: "8px" }}>
               <Field
                 name="to"
                 type="text"
                 label="Title"
                 className="textFeild"
+                placeHolder="Recipient name"
               />
               <ErrorMessage component={ErrorMsg} name="to" />
             </div>
             <div style={{ paddingBottom: "8px" }}>
-              <p className="textFeildLabel">say something nice</p>
+              <p className="textFeildLabel">say something nice:</p>
               <Field
                 style={{ resize: "none" }}
                 className="textFeild"
@@ -141,16 +142,18 @@ const CreateLollyForm = () => {
                 name="message"
                 type="text"
                 label="Title"
+                placeHolder="Message..."
               />
               <ErrorMessage component={ErrorMsg} name="message" />
             </div>
             <div style={{ paddingBottom: "12px" }}>
-              <p className="textFeildLabel">from</p>
+              <p className="textFeildLabel">from:</p>
               <Field
                 name="from"
                 type="text"
                 label="Title"
                 className="textFeild"
+                placeHolder="Sender name"
               />
               <ErrorMessage component={ErrorMsg} name="from" />
             </div>

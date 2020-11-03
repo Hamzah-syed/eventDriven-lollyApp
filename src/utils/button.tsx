@@ -47,6 +47,7 @@ export const Button = styled.button`
   background-color: #4c51bf;
   animation: ${(props) => (props.shake ? shake : "")} 0.5s linear infinite;
   transition: 0.5s;
+  text-transform: capitalize;
   &:hover {
     background: #4c41bf;
   }

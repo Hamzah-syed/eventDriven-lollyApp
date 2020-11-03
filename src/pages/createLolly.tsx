@@ -3,12 +3,12 @@ import React from "react";
 import "../assets/css/main.css";
 //components
 import CreateLollyForm from "../components/createLollyForm";
-import Lolly from "../components/lolly";
+import Header from "../components/header";
 
 const CreateLolly = () => {
   return (
-    <div className="container">
-      <h1>Create Lolly</h1>
+    <div>
+      <Header />
       <div className="">
         <CreateLollyForm />
       </div>
