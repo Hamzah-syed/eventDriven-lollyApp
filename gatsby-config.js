@@ -11,7 +11,8 @@ module.exports = {
         // This is the field under which it's accessible
         fieldName: "Lollies",
         // URL to query from
-        url: "http://localhost:8888/.netlify/functions/lollyApi",
+        url:
+          "https://serverless-virtual-lolly.netlify.app/.netlify/functions/lollyApi",
       },
     },
   ],
