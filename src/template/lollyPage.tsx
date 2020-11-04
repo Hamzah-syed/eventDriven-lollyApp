@@ -27,7 +27,7 @@ const LollyPage = ({
     Lollies: { GetLollyBySlug },
   },
 }) => {
-  console.log(GetLollyBySlug);
+  // console.log(GetLollyBySlug);
   return (
     <div>
       <Header />

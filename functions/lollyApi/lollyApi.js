@@ -31,6 +31,7 @@ const typeDefs = gql`
       flavourTop: String!
       flavourMiddle: String!
       flavourBottom: String!
+      slug: String!
     ): Lolly
   }
 `;

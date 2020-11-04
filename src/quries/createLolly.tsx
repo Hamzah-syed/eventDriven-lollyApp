@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-const CREATE_LOLLY = gql`
+export const CREATE_LOLLY = gql`
   mutation createLolly(
     $to: String!
     $message: String!
@@ -8,6 +8,7 @@ const CREATE_LOLLY = gql`
     $flavourTop: String!
     $flavourMiddle: String!
     $flavourBottom: String!
+    $slug: String!
   ) {
     craeteLolly(
       to: $to
@@ -16,6 +17,7 @@ const CREATE_LOLLY = gql`
       flavourTop: $flavourTop
       flavourMiddle: $flavourMiddle
       flavourBottom: $flavourBottom
+      slug: $slug
     ) {
       slug
     }

@@ -39,7 +39,7 @@ const CreateLollyForm = () => {
 
   const onSubmit = async (values, actions) => {
     const slug = shortId.generate();
-    console.log(slug);
+    // console.log(slug);
     const result = await createLolly({
       variables: {
         to: values.to,
@@ -60,7 +60,7 @@ const CreateLollyForm = () => {
       },
     });
     await navigate(`/lolly/${result.data?.craeteLolly?.slug}`);
-    console.log(result);
+    // console.log(result);
   };
 
   return (
