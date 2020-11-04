@@ -46,7 +46,13 @@ export type MutationCraeteLollyArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  hello: Scalars['String'];
+  AllLollies: Array<Maybe<Lolly>>;
+  GetLollyBySlug?: Maybe<Lolly>;
+};
+
+
+export type QueryGetLollyBySlugArgs = {
+  slug: Scalars['String'];
 };
 
 
@@ -65,6 +71,19 @@ export type CreateLollyMutation = (
   & { craeteLolly?: Maybe<(
     { __typename?: 'Lolly' }
     & Pick<Lolly, 'slug'>
+  )> }
+);
+
+export type GetLollyBySlugQueryVariables = Exact<{
+  slug: Scalars['String'];
+}>;
+
+
+export type GetLollyBySlugQuery = (
+  { __typename?: 'Query' }
+  & { GetLollyBySlug?: Maybe<(
+    { __typename?: 'Lolly' }
+    & Pick<Lolly, 'to' | 'message' | 'from' | 'flavourTop' | 'flavourMiddle' | 'flavourBottom'>
   )> }
 );
 
@@ -106,3 +125,41 @@ export function useCreateLollyMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateLollyMutationHookResult = ReturnType<typeof useCreateLollyMutation>;
 export type CreateLollyMutationResult = Apollo.MutationResult<CreateLollyMutation>;
 export type CreateLollyMutationOptions = Apollo.BaseMutationOptions<CreateLollyMutation, CreateLollyMutationVariables>;
+export const GetLollyBySlugDocument = gql`
+    query GetLollyBySlug($slug: String!) {
+  GetLollyBySlug(slug: $slug) {
+    to
+    message
+    from
+    flavourTop
+    flavourMiddle
+    flavourBottom
+  }
+}
+    `;
+
+/**
+ * __useGetLollyBySlugQuery__
+ *
+ * To run a query within a React component, call `useGetLollyBySlugQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLollyBySlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLollyBySlugQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useGetLollyBySlugQuery(baseOptions?: Apollo.QueryHookOptions<GetLollyBySlugQuery, GetLollyBySlugQueryVariables>) {
+        return Apollo.useQuery<GetLollyBySlugQuery, GetLollyBySlugQueryVariables>(GetLollyBySlugDocument, baseOptions);
+      }
+export function useGetLollyBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLollyBySlugQuery, GetLollyBySlugQueryVariables>) {
+          return Apollo.useLazyQuery<GetLollyBySlugQuery, GetLollyBySlugQueryVariables>(GetLollyBySlugDocument, baseOptions);
+        }
+export type GetLollyBySlugQueryHookResult = ReturnType<typeof useGetLollyBySlugQuery>;
+export type GetLollyBySlugLazyQueryHookResult = ReturnType<typeof useGetLollyBySlugLazyQuery>;
+export type GetLollyBySlugQueryResult = Apollo.QueryResult<GetLollyBySlugQuery, GetLollyBySlugQueryVariables>;

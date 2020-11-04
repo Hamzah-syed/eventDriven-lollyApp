@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { navigate } from "gatsby";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 //graphql
@@ -54,6 +55,7 @@ const CreateLollyForm = () => {
         from: "",
       },
     });
+    await navigate(`/lollies/${result.data?.craeteLolly?.slug}`);
     console.log(result);
   };
 
@@ -128,7 +130,7 @@ const CreateLollyForm = () => {
                 type="text"
                 label="Title"
                 className="textFeild"
-                placeHolder="Recipient name"
+                placeholder="Recipient name"
               />
               <ErrorMessage component={ErrorMsg} name="to" />
             </div>
@@ -142,7 +144,7 @@ const CreateLollyForm = () => {
                 name="message"
                 type="text"
                 label="Title"
-                placeHolder="Message..."
+                placeholder="Message..."
               />
               <ErrorMessage component={ErrorMsg} name="message" />
             </div>
@@ -153,7 +155,7 @@ const CreateLollyForm = () => {
                 type="text"
                 label="Title"
                 className="textFeild"
-                placeHolder="Sender name"
+                placeholder="Sender name"
               />
               <ErrorMessage component={ErrorMsg} name="from" />
             </div>

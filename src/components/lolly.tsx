@@ -1,9 +1,9 @@
 import React, { FC } from "react";
 
 interface props {
-  flavourTop: string;
-  flavourMiddle: string;
-  flavourBottom: string;
+  flavourTop: string | undefined;
+  flavourMiddle: string | undefined;
+  flavourBottom: string | undefined;
 }
 
 const Lolly: FC<props> = ({ flavourTop, flavourMiddle, flavourBottom }) => {
