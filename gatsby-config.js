@@ -14,7 +14,7 @@ module.exports = {
         fieldName: "Lollies",
         // URL to query from
         url:
-          "https://serverless-virtuallolly.netlify.app/.netlify/functions/lollyApi",
+          "https://serverless-vlolly.netlify.app/.netlify/functions/lollyApi",
       },
     },
   ],
