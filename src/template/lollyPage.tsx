@@ -20,6 +20,8 @@ export const query = graphql`
   }
 `;
 
+const isBrowser = () => typeof window !== "undefined";
+
 const LollyPage = ({
   data: {
     Lollies: { GetLollyBySlug },
@@ -40,7 +42,9 @@ const LollyPage = ({
           <div className="freezedLollyData">
             <div className="linkWrapper">
               <h4>Share this link with your frined</h4>
-              <p>{`${location.origin}/lollies/${GetLollyBySlug.slug}`}</p>
+              <p>{`${
+                isBrowser() ? location.origin : "somthing went wrong"
+              }/lolly/${GetLollyBySlug.slug}`}</p>
             </div>
             <Box p="20px" className="freezedLollyCard">
               <h1>to: {GetLollyBySlug.to}</h1>

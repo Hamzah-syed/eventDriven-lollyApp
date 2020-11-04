@@ -13,7 +13,7 @@ exports.createPages = async ({ actions, graphql }) => {
 
   data.Lollies.AllLollies.forEach(({ slug }) => {
     actions.createPage({
-      path: `lollies/${slug}`,
+      path: `lolly/${slug}`,
       component: path.resolve(`./src/template/lollyPage.tsx`),
       context: {
         slug: slug,

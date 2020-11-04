@@ -39,9 +39,6 @@ const FreezedLolly: React.FC<props> = ({ path, slug = "", location }) => {
     );
   }
 
-  console.log(data);
-
-  console.log(location);
   return (
     <div>
       <Header />

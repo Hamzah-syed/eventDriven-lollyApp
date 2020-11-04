@@ -55,7 +55,7 @@ const CreateLollyForm = () => {
         from: "",
       },
     });
-    await navigate(`/lollies/${result.data?.craeteLolly?.slug}`);
+    await navigate(`/lolly/${result.data?.craeteLolly?.slug}`);
     console.log(result);
   };
 

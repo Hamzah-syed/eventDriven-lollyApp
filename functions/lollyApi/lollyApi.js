@@ -7,7 +7,7 @@ const { ApolloServer, gql } = require("apollo-server-lambda"),
 require("dotenv").config();
 
 const Client = new faunadb.Client({
-  secret: "fnAD5uDay1ACBz6efQRmbEcRNMFwIv3meE4clE9j",
+  secret: process.env.ADMIN_SECRET,
 });
 
 const typeDefs = gql`
@@ -87,7 +87,7 @@ const resolvers = {
         );
 
         axios
-          .post("https://api.netlify.com/build_hooks/5fa268d2ab149a30870ead17")
+          .post(process.env.NETLIFY_HOOK_URL)
           .then(function (response) {
             console.log(response);
           })
