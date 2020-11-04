@@ -1,5 +1,5 @@
 [build]
-    gatsby build && cd functions && yarn install
+    command = "yarn build && cd functions && yarn install"
     publish ="public"
     functions="functions"
 
