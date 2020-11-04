@@ -13,9 +13,9 @@ const Page404 = ({ location }) => {
   const path = location.pathname.slice(1, 7);
   const slug = location.pathname.slice(7);
 
-  if (path !== `lolly/` || slug === "") {
-    return <Page404Compoent />;
-  }
+  // if (path !== `lolly/` || slug === "") {
+  //   return <Page404Compoent />;
+  // }
   const { loading, error, data } = useGetLollyBySlugQuery({
     variables: {
       slug: slug,
@@ -27,6 +27,9 @@ const Page404 = ({ location }) => {
         <Loader type="ThreeDots" color="#cbd5e0" />;
       </div>
     );
+  }
+  if (error) {
+    return <Page404Compoent />;
   }
 
   // console.log(data);
