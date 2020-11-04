@@ -23,14 +23,12 @@ const Page404 = ({ location }) => {
   });
   if (loading) {
     return (
-      <div style={{ textAlign: "center", marginTop: "100px" }}>
+      <div className="loderWrapper">
         <Loader type="ThreeDots" color="#cbd5e0" />;
       </div>
     );
   }
-  if (error) {
-    return <Page404Compoent />;
-  }
+
   // console.log(data);
   // console.log(path);
   // console.log(slug);

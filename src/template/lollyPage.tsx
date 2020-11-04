@@ -42,9 +42,9 @@ const LollyPage = ({
           <div className="freezedLollyData">
             <div className="linkWrapper">
               <h4>Share this link with your frined</h4>
-              <p>{`${
-                isBrowser() ? location.origin : "somthing went wrong"
-              }/lolly/${GetLollyBySlug.slug}`}</p>
+              <p>{`${isBrowser() ? location.origin : ""}/lolly/${
+                GetLollyBySlug.slug
+              }`}</p>
             </div>
             <Box p="20px" className="freezedLollyCard">
               <h1>to: {GetLollyBySlug.to}</h1>
