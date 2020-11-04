@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { navigate } from "gatsby";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import shortId from "shortid";
 import * as Yup from "yup";
 //graphql
 import { useCreateLollyMutation } from "../generated/graphql";
@@ -37,6 +38,8 @@ const CreateLollyForm = () => {
   });
 
   const onSubmit = async (values, actions) => {
+    const slug = shortId.generate();
+
     const result = await createLolly({
       variables: {
         to: values.to,
@@ -45,6 +48,7 @@ const CreateLollyForm = () => {
         flavourTop: flavours.flavourTop,
         flavourMiddle: flavours.flavourMiddle,
         flavourBottom: flavours.flavourBottom,
+        slug: slug,
       },
     });
 
