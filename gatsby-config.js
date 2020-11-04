@@ -13,7 +13,8 @@ module.exports = {
         // This is the field under which it's accessible
         fieldName: "Lollies",
         // URL to query from
-        url: process.env.GRAPHQL_URL,
+        url:
+          "https://serverless-virtuallolly.netlify.app/.netlify/functions/lollyApi",
       },
     },
   ],
