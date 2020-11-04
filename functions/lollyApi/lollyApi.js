@@ -1,6 +1,7 @@
 const { ApolloServer, gql } = require("apollo-server-lambda"),
   faunadb = require("faunadb"),
   shortId = require("shortId"),
+  const axios = require("axios")
   q = faunadb.query;
 
 require("dotenv").config();
@@ -84,6 +85,15 @@ const resolvers = {
             data: args,
           })
         );
+
+        axios
+          .post("https://api.netlify.com/build_hooks/5fa268d2ab149a30870ead17")
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
 
         return result.data;
       } catch (error) {

@@ -10,7 +10,7 @@ exports.createPages = async ({ actions, graphql }) => {
       }
     }
   `);
-  console.log(data);
+
   data.Lollies.AllLollies.forEach(({ slug }) => {
     actions.createPage({
       path: `lollies/${slug}`,

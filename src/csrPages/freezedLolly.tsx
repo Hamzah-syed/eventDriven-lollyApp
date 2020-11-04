@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "gatsby";
+
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 //data
 import { useGetLollyBySlugQuery } from "../generated/graphql";
@@ -23,7 +24,6 @@ const FreezedLolly: React.FC<props> = ({ path, slug = "", location }) => {
     },
   });
 
-  console.log(path);
   if (loading) {
     return (
       <div style={{ textAlign: "center", marginTop: "100px" }}>
