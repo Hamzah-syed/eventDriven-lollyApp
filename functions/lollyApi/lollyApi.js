@@ -1,7 +1,7 @@
 const { ApolloServer, gql } = require("apollo-server-lambda"),
   faunadb = require("faunadb"),
   shortId = require("shortId"),
-  const axios = require("axios")
+  axios = require("axios"),
   q = faunadb.query;
 
 require("dotenv").config();
