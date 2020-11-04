@@ -6,7 +6,7 @@ const { ApolloServer, gql } = require("apollo-server-lambda"),
 require("dotenv").config();
 
 const Client = new faunadb.Client({
-  secret: "fnAD5uDay1ACBz6efQRmbEcRNMFwIv3meE4clE9j",
+  secret: process.env.ADMIN_SECRET,
 });
 
 const typeDefs = gql`
