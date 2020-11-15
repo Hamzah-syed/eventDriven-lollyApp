@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 10
+  build:
+    commands:
+      # run your webpack/parcel/rollup bundler
+      - npm run build
+
+artifacts:
+  # define output directory
+  base-directory: public
+  files:
+    # use all files under base-directory
+    - "**/*"
