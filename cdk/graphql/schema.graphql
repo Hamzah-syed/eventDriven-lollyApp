@@ -1,0 +1,28 @@
+type lolly {
+  id: ID!
+  to: String!
+  from: String!
+  messsage: String!
+  colorTop: String!
+  colorMiddle: String!
+  colorBottom: String!
+}
+
+input createLollyInput {
+  id: ID!
+  to: String!
+  from: String!
+  messsage: String!
+  colorTop: String!
+  colorMiddle: String!
+  colorBottom: String!
+}
+
+type Query {
+  allLollies: [lolly]
+  getLolly(lollyId: String!): lolly
+}
+
+type Mutation {
+  createLolly(newLolly: createLollyInput!): lolly
+}

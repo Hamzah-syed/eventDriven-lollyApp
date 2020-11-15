@@ -1,9 +1,0 @@
-overwrite: true
-schema: "http://localhost:8888/.netlify/functions/lollyApi"
-documents: "src/**/*.{ts,tsx}"
-generates:
-  src/generated/graphql.tsx:
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"

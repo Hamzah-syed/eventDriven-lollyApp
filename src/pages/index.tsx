@@ -5,7 +5,6 @@ import "../assets/css/main.css";
 //components
 import Header from "../components/header";
 import Lolly from "../components/lolly";
-import { Button } from "../utils/button";
 import { Box } from "../utils/box";
 
 const Index = () => {

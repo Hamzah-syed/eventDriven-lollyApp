@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { navigate } from "gatsby";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import shortId from "shortid";
 import * as Yup from "yup";
-//graphql
-import { useCreateLollyMutation } from "../generated/graphql";
+import { API } from "aws-amplify";
+
 //components
 import Lolly from "./lolly";
 import ErrorMsg from "../utils/errorMsg";
@@ -30,36 +30,60 @@ const validationSchema = Yup.object({
 });
 
 const CreateLollyForm = () => {
-  const [createLolly, { loading }] = useCreateLollyMutation();
+  const [loading, setLoading] = useState(false);
   const [flavours, setFlavours] = useState<FlavoursType>({
     flavourTop: "#A4193B",
     flavourMiddle: "#DF4343",
     flavourBottom: "#DB2929",
   });
 
+  const createLollyMutation = `
+    mutation createLolly($newLolly: createLollyInput!){
+      createLolly(newLolly:$newLolly) {
+        colorBottom
+        colorMiddle
+        colorTop
+        from
+        id
+        to
+        messsage
+      }
+    }
+  `;
+
+  const addLolly = async (values) => {
+    // console.log(res.data.createLolly);
+  };
+
   const onSubmit = async (values, actions) => {
-    const slug = shortId.generate();
-    // console.log(slug);
-    const result = await createLolly({
+    // await addLolly(values);
+    const id = shortId.generate();
+    setLoading(true);
+    const res: any = await API.graphql({
+      query: createLollyMutation,
       variables: {
-        to: values.to,
-        message: values.message,
-        from: values.from,
-        flavourTop: flavours.flavourTop,
-        flavourMiddle: flavours.flavourMiddle,
-        flavourBottom: flavours.flavourBottom,
-        slug: slug,
+        newLolly: {
+          id: id,
+          to: values.to,
+          messsage: values.message,
+          from: values.from,
+          colorTop: flavours.flavourTop,
+          colorMiddle: flavours.flavourMiddle,
+          colorBottom: flavours.flavourBottom,
+        },
       },
     });
 
-    await actions.resetForm({
+    actions.resetForm({
       values: {
         to: "",
         message: "",
         from: "",
       },
     });
-    await navigate(`/lolly/${result.data?.craeteLolly?.slug}`);
+    setLoading(false);
+    const slug = res.data.createLolly.id;
+    navigate(`/lolly/${slug}`);
     // console.log(result);
   };
 

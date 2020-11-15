@@ -4,36 +4,36 @@ exports.createPages = async ({ actions, graphql }) => {
   const { data } = await graphql(`
     query MyQuery {
       Lollies {
-        AllLollies {
-          slug
+        allLollies {
+          id
         }
       }
     }
   `);
 
-  data.Lollies.AllLollies.forEach(({ slug }) => {
+  data.Lollies.allLollies.forEach(({ id }) => {
     actions.createPage({
-      path: `lolly/${slug}`,
+      path: `lolly/${id}`,
       component: path.resolve(`./src/template/lollyPage.tsx`),
       context: {
-        slug: slug,
+        id: id,
       },
     });
   });
 };
 
-exports.onCreatePage = async ({ page, actions }) => {
-  const { createPage } = actions;
+// exports.onCreatePage = async ({ page, actions }) => {
+//   const { createPage } = actions;
 
-  // page.matchPath is a special key that’s used for matching pages
+//   // page.matchPath is a special key that’s used for matching pages
 
-  // only on the client.
+//   // only on the client.
 
-  if (page.path.match(/^\/lollies/)) {
-    page.matchPath = "/lollies/*";
+//   if (page.path.match(/^\/lollies/)) {
+//     page.matchPath = "/lollies/*";
 
-    // Update the page.
+//     // Update the page.
 
-    createPage(page);
-  }
-};
+//     createPage(page);
+//   }
+// };

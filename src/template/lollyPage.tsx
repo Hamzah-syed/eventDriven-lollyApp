@@ -1,60 +1,59 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { API } from "aws-amplify";
 import { graphql, Link } from "gatsby";
-import { Box } from "../utils/box";
 import Header from "../components/header";
+import { Box } from "../utils/box";
 import Lolly from "../components/lolly";
 
 export const query = graphql`
-  query MyQuery($slug: String!) {
+  query MyQuery($id: String!) {
     Lollies {
-      GetLollyBySlug(slug: $slug) {
+      getLolly(lollyId: $id) {
+        id
         to
-        message
         from
-        flavourTop
-        flavourMiddle
-        flavourBottom
-        slug
+        messsage
+        colorTop
+        colorMiddle
+        colorBottom
       }
     }
   }
 `;
-
-const isBrowser = () => typeof window !== "undefined";
-
 const LollyPage = ({
   data: {
-    Lollies: { GetLollyBySlug },
+    Lollies: { getLolly },
   },
 }) => {
-  // console.log(GetLollyBySlug);
+  const isBrowser = () => typeof window !== "undefined";
+
   return (
     <div>
       <Header />
       <Box p="12px">
         <div className="freezedLollyCardWrapper">
           <Lolly
-            flavourTop={GetLollyBySlug.flavourTop}
-            flavourBottom={GetLollyBySlug.flavourBottom}
-            flavourMiddle={GetLollyBySlug.flavourMiddle}
+            flavourTop={getLolly.colorTop}
+            flavourBottom={getLolly.colorBottom}
+            flavourMiddle={getLolly.colorMiddle}
           />
 
           <div className="freezedLollyData">
             <div className="linkWrapper">
               <h4>Share this link with your frined</h4>
               <p>{`${isBrowser() ? location.origin : ""}/lolly/${
-                GetLollyBySlug.slug
+                getLolly.id
               }`}</p>
             </div>
             <Box p="20px" className="freezedLollyCard">
-              <h1>to: {GetLollyBySlug.to}</h1>
-              <p>{GetLollyBySlug.message}</p>
-              <h3>From: {GetLollyBySlug.from}</h3>
+              <h1>to: {getLolly.to}</h1>
+              <p>{getLolly.messsage}</p>
+              <h3>From: {getLolly.from}</h3>
             </Box>
             <div className="recivermessage">
               <p>
-                {GetLollyBySlug.from} made this virtual lollipop for you. You
-                can <Link to="/createLolly"> make your own</Link> to send to a
+                {getLolly.from} made this virtual lollipop for you. You can{" "}
+                <Link to="/createLolly"> make your own</Link> to send to a
                 friend who deserve some sugary treat which won't rot their
                 teeth...
               </p>

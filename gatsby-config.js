@@ -13,7 +13,11 @@ module.exports = {
         // This is the field under which it's accessible
         fieldName: "Lollies",
         // URL to query from
-        url: process.env.GRAPHQL_URL,
+        url:
+          "https://syn3vddvf5durmyoighbskxsgu.appsync-api.us-east-2.amazonaws.com/graphql",
+        headers: {
+          "x-api-key": "da2-erswtpxirzg2hkfvkxtbri6roi",
+        },
       },
     },
   ],
