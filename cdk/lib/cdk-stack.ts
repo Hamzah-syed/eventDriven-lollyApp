@@ -8,6 +8,10 @@ import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import { DynamoDbDataSource } from "@aws-cdk/aws-appsync";
 import * as origins from "@aws-cdk/aws-cloudfront-origins";
 import * as codebuild from "@aws-cdk/aws-codebuild";
+import { GitHub } from "@material-ui/icons";
+import { Source } from "@aws-cdk/aws-codebuild";
+import { SecretValue } from "@aws-cdk/core";
+import { SecretsManager } from "aws-sdk";
 
 export class CdkStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -42,20 +46,26 @@ export class CdkStack extends cdk.Stack {
     const deployBuild = new codebuild.Project(this, "app-build", {
       // specify where to look for build instructions
       buildSpec: codebuild.BuildSpec.fromSourceFilename("ci/buildspec.yml"),
+
       // define source code location
+
       source: codebuild.Source.gitHub({
-        owner: "hamzah-syed",
-        repo: "https://github.com/Hamzah-syed/aws-serverless-vlolly.git",
+        owner: "hamzah-dev",
+        repo: "aws-serverless-vlolly",
+
         webhookFilters: [
           // trigger Codebuild project on PUSH to master branch
+
           codebuild.FilterGroup.inEventOf(
             codebuild.EventAction.PUSH
           ).andHeadRefIs("^refs/heads/master$"),
         ],
       }),
+
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_3_0,
       },
+
       // set our bucket as a target location for build artifacts
       artifacts: codebuild.Artifacts.s3({
         bucket: s3Bucket,
@@ -65,6 +75,11 @@ export class CdkStack extends cdk.Stack {
         includeBuildId: false,
         name: ".",
       }),
+    });
+    new codebuild.GitHubSourceCredentials(this, "githubCren", {
+      accessToken: SecretValue.plainText(
+        "1b1d52e45288b67602aa85f57562ab00f5ee33fa"
+      ),
     });
     // creating api
     const api = new appSync.GraphqlApi(this, "lollyApi", {
