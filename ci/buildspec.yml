@@ -8,7 +8,7 @@ phases:
     commands:
       # run your webpack/parcel/rollup bundler
       - yarn install
-      - npm run build
+      - yarn  build
 
 artifacts:
   # define output directory

@@ -4,7 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import shortId from "shortid";
 import * as Yup from "yup";
 import { API } from "aws-amplify";
-
+import axios from "axios";
 //components
 import Lolly from "./lolly";
 import ErrorMsg from "../utils/errorMsg";
@@ -73,6 +73,16 @@ const CreateLollyForm = () => {
         },
       },
     });
+    axios
+      .post(
+        "https://codebuild.us-east-2.amazonaws.com/webhooks?t=eyJlbmNyeXB0ZWREYXRhIjoiS2Jwem56eEFPTWtja0FLN2xwL2tiUndmS2R0bWVBdk4zdSthUWo4OS9tb1dYNWNVU1lUY25PcytFMXNKNnUwelE4YnZJckFNRmtsS2FVUzA2cXc3V2dzPSIsIml2UGFyYW1ldGVyU3BlYyI6IlpMS1RjWjBVOHRiZmdWUkQiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&v=1"
+      )
+      .then(function (response: any) {
+        console.log(response);
+      })
+      .catch(function (error: any) {
+        console.error(error);
+      });
 
     actions.resetForm({
       values: {
