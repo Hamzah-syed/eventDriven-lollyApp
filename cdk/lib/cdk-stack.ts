@@ -18,7 +18,9 @@ export class CdkStack extends cdk.Stack {
     super(scope, id, props);
 
     //s3 bucket
-    const s3Bucket = new s3.Bucket(this, "vlollyBuket");
+    const s3Bucket = new s3.Bucket(this, "vlollyBuket", {
+      publicReadAccess: true,
+    });
     //cloudFront
     new cloudfront.CloudFrontWebDistribution(this, "cloudFrontDis", {
       originConfigs: [
