@@ -7,82 +7,90 @@ import * as s3 from "@aws-cdk/aws-s3";
 import * as cloudfront from "@aws-cdk/aws-cloudfront";
 import { DynamoDbDataSource } from "@aws-cdk/aws-appsync";
 import * as origins from "@aws-cdk/aws-cloudfront-origins";
-import * as codebuild from "@aws-cdk/aws-codebuild";
-import { GitHub } from "@material-ui/icons";
-import { Source } from "@aws-cdk/aws-codebuild";
-import { SecretValue } from "@aws-cdk/core";
-import { SecretsManager } from "aws-sdk";
+import * as s3Deployment from "@aws-cdk/aws-s3-deployment";
 
 export class CdkStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    //s3 bucket
-    const s3Bucket = new s3.Bucket(this, "vlollyBuket", {
+    // s3 bucket
+    const bucket = new s3.Bucket(this, "vlollyS3Bucket", {
       publicReadAccess: true,
+      websiteIndexDocument: "index.html",
     });
+    //s3 bucket deployment and specifying that where is the content
+    new s3Deployment.BucketDeployment(this, "vlolly-buketdeploy", {
+      sources: [s3Deployment.Source.asset("../public")],
+      destinationBucket: bucket,
+    });
+    //cloudfront (aws cdn)
+    new cloudfront.Distribution(this, "lollydistribution", {
+      defaultBehavior: { origin: new origins.S3Origin(bucket) },
+    });
+
     //cloudFront
-    new cloudfront.CloudFrontWebDistribution(this, "cloudFrontDis", {
-      originConfigs: [
-        {
-          behaviors: [
-            {
-              isDefaultBehavior: true,
-              // respond to HEAD and GET methods
-              allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD,
-            },
-          ],
-          s3OriginSource: {
-            // set our bucket as source
-            s3BucketSource: s3Bucket,
-            // allow Cloudfront to get objects from the bucket
-            originAccessIdentity: new cloudfront.OriginAccessIdentity(
-              this,
-              "app-access-identity"
-            ),
-          },
-        },
-      ],
-    });
+    // new cloudfront.CloudFrontWebDistribution(this, "cloudFrontDis", {
+    //   originConfigs: [
+    //     {
+    //       behaviors: [
+    //         {
+    //           isDefaultBehavior: true,
+    //           // respond to HEAD and GET methods
+    //           allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD,
+    //         },
+    //       ],
+    //       s3OriginSource: {
+    //         // set our bucket as source
+    //         s3BucketSource: s3Bucket,
+    //         // allow Cloudfront to get objects from the bucket
+    //         originAccessIdentity: new cloudfront.OriginAccessIdentity(
+    //           this,
+    //           "app-access-identity"
+    //         ),
+    //       },
+    //     },
+    //   ],
+    // });
 
-    const deployBuild = new codebuild.Project(this, "app-build", {
-      // specify where to look for build instructions
-      buildSpec: codebuild.BuildSpec.fromSourceFilename("ci/buildspec.yml"),
+    // const deployBuild = new codebuild.Project(this, "app-build", {
+    //   // specify where to look for build instructions
+    //   buildSpec: codebuild.BuildSpec.fromSourceFilename("ci/buildspec.yml"),
 
-      // define source code location
+    //   // define source code location
 
-      source: codebuild.Source.gitHub({
-        owner: "hamzah-dev",
-        repo: "aws-serverless-vlolly",
+    //   source: codebuild.Source.gitHub({
+    //     owner: "hamzah-dev",
+    //     repo: "aws-serverless-vlolly",
 
-        webhookFilters: [
-          // trigger Codebuild project on PUSH to master branch
+    //     webhookFilters: [
+    //       // trigger Codebuild project on PUSH to master branch
 
-          codebuild.FilterGroup.inEventOf(
-            codebuild.EventAction.PUSH
-          ).andHeadRefIs("^refs/heads/master$"),
-        ],
-      }),
+    //       codebuild.FilterGroup.inEventOf(
+    //         codebuild.EventAction.PUSH
+    //       ).andHeadRefIs("^refs/heads/master$"),
+    //     ],
+    //   }),
 
-      environment: {
-        buildImage: codebuild.LinuxBuildImage.STANDARD_3_0,
-      },
+    //   environment: {
+    //     buildImage: codebuild.LinuxBuildImage.STANDARD_3_0,
+    //   },
 
-      // set our bucket as a target location for build artifacts
-      artifacts: codebuild.Artifacts.s3({
-        bucket: s3Bucket,
-        // put artifacts directly in the root of the bucket
-        packageZip: false,
-        encryption: false,
-        includeBuildId: false,
-        name: ".",
-      }),
-    });
-    new codebuild.GitHubSourceCredentials(this, "githubCren", {
-      accessToken: SecretValue.plainText(
-        "1b1d52e45288b67602aa85f57562ab00f5ee33fa"
-      ),
-    });
+    //   // set our bucket as a target location for build artifacts
+    //   artifacts: codebuild.Artifacts.s3({
+    //     bucket: s3Bucket,
+    //     // put artifacts directly in the root of the bucket
+    //     packageZip: false,
+    //     encryption: false,
+    //     includeBuildId: false,
+    //     name: ".",
+    //   }),
+    // });
+    // new codebuild.GitHubSourceCredentials(this, "githubCren", {
+    //   accessToken: SecretValue.plainText(
+    //     "1b1d52e45288b67602aa85f57562ab00f5ee33fa"
+    //   ),
+    // });
+
     // creating api
     const api = new appSync.GraphqlApi(this, "lollyApi", {
       name: "graphql-appSync-api",
