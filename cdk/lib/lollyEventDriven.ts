@@ -9,9 +9,9 @@ import * as s3Deployment from "@aws-cdk/aws-s3-deployment";
 import * as event from "@aws-cdk/aws-events";
 import * as target from "@aws-cdk/aws-events-targets";
 import * as lambdaDestination from "@aws-cdk/aws-lambda-destinations";
-import { Code } from "@aws-cdk/aws-lambda";
+import * as pipline from "@aws-cdk/pipelines";
 
-export class CdkStack extends cdk.Stack {
+export class lollyEventDrivenStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -29,69 +29,6 @@ export class CdkStack extends cdk.Stack {
     new cloudfront.Distribution(this, "lollydistribution", {
       defaultBehavior: { origin: new origins.S3Origin(bucket) },
     });
-
-    //cloudFront
-    // new cloudfront.CloudFrontWebDistribution(this, "cloudFrontDis", {
-    //   originConfigs: [
-    //     {
-    //       behaviors: [
-    //         {
-    //           isDefaultBehavior: true,
-    //           // respond to HEAD and GET methods
-    //           allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD,
-    //         },
-    //       ],
-    //       s3OriginSource: {
-    //         // set our bucket as source
-    //         s3BucketSource: s3Bucket,
-    //         // allow Cloudfront to get objects from the bucket
-    //         originAccessIdentity: new cloudfront.OriginAccessIdentity(
-    //           this,
-    //           "app-access-identity"
-    //         ),
-    //       },
-    //     },
-    //   ],
-    // });
-
-    // const deployBuild = new codebuild.Project(this, "app-build", {
-    //   // specify where to look for build instructions
-    //   buildSpec: codebuild.BuildSpec.fromSourceFilename("ci/buildspec.yml"),
-
-    //   // define source code location
-
-    //   source: codebuild.Source.gitHub({
-    //     owner: "hamzah-dev",
-    //     repo: "aws-serverless-vlolly",
-
-    //     webhookFilters: [
-    //       // trigger Codebuild project on PUSH to master branch
-
-    //       codebuild.FilterGroup.inEventOf(
-    //         codebuild.EventAction.PUSH
-    //       ).andHeadRefIs("^refs/heads/master$"),
-    //     ],
-    //   }),
-
-    //   environment: {
-    //     buildImage: codebuild.LinuxBuildImage.STANDARD_3_0,
-    //   },
-
-    //   // set our bucket as a target location for build artifacts
-    //   artifacts: codebuild.Artifacts.s3({
-    //     bucket: s3Bucket,
-    //     // put artifacts directly in the root of the bucket
-    //     packageZip: false,
-    //     encryption: false,
-    //     includeBuildId: false,
-    //     name: ".",
-    //   }),
-    // });
-    // new codebuild.GitHubSourceCredentials(this, "githubCren", {
-    //   accessToken: SecretValue.plainText(
-    //     "1b1d52e45288b67602aa85f57562ab00f5ee33fa"
-    //   ),
-    // });
 
     // creating api
     const api = new appSync.GraphqlApi(this, "lollyApi", {
@@ -116,6 +53,11 @@ export class CdkStack extends cdk.Stack {
       },
     });
 
+    //creating bus
+    const bus = new event.EventBus(this, "lollyEventDrivenBus", {
+      eventBusName: "lollyBus",
+    });
+
     //creating lambda function
     const lambdaFunc = new lambda.Function(this, "lollyLambda", {
       runtime: lambda.Runtime.NODEJS_10_X,
@@ -125,6 +67,7 @@ export class CdkStack extends cdk.Stack {
       environment: {
         DYNAMO_TABLE_NAME: lollyTable.tableName,
       },
+      onSuccess: new lambdaDestination.EventBridgeDestination(bus) as any,
     });
 
     // creating lambda function as a datasource
@@ -145,5 +88,27 @@ export class CdkStack extends cdk.Stack {
     });
 
     lollyTable.grantFullAccess(lambdaFunc);
+
+    //event target lambda function
+    const eventTargetLambda = new lambda.Function(this, "eventTargetLambda", {
+      runtime: lambda.Runtime.NODEJS_10_X,
+      code: lambda.Code.fromAsset("lambda"),
+      handler: "helloWorld.handler",
+    });
+    new event.Rule(this, "lollyrule", {
+      ruleName: "lollyRule",
+      eventBus: bus,
+      description: "lolly rule",
+      eventPattern: {
+        source: ["lolly"],
+      },
+    });
+    new target.LambdaFunction(
+      lambda.Function.fromFunctionArn(
+        this,
+        "ruleTarget",
+        eventTargetLambda.functionArn
+      ) as any
+    );
   }
 }

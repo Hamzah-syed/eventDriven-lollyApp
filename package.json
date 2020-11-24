@@ -24,7 +24,7 @@
     "axios": "^0.21.0",
     "babel-plugin-styled-components": "^1.11.1",
     "formik": "^2.2.5",
-    "gatsby": "^2.25.3",
+    "gatsby": "^2.26.1",
     "gatsby-plugin-material-ui": "^2.1.10",
     "gatsby-plugin-styled-components": "^3.4.0",
     "gatsby-plugin-typescript": "^2.6.0",
