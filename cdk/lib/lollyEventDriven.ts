@@ -9,10 +9,19 @@ import * as s3Deployment from "@aws-cdk/aws-s3-deployment";
 import * as event from "@aws-cdk/aws-events";
 import * as target from "@aws-cdk/aws-events-targets";
 import * as lambdaDestination from "@aws-cdk/aws-lambda-destinations";
-import * as pipline from "@aws-cdk/pipelines";
+import * as codepipeline_actions from "@aws-cdk/aws-codepipeline-actions";
+import * as iam from "@aws-cdk/aws-iam";
+import * as codepipeline from "@aws-cdk/aws-codepipeline";
+import * as codeBuild from "@aws-cdk/aws-codebuild";
+import * as pipelines from "@aws-cdk/pipelines";
+import * as commits from "@aws-cdk/aws-codecommit";
+
+export interface PipelineStackProps extends cdk.StackProps {
+  domainName?: string;
+}
 
 export class lollyEventDrivenStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
     // s3 bucket
@@ -20,14 +29,49 @@ export class lollyEventDrivenStack extends cdk.Stack {
       publicReadAccess: true,
       websiteIndexDocument: "index.html",
     });
+
     //s3 bucket deployment and specifying that where is the content
     new s3Deployment.BucketDeployment(this, "vlolly-buketdeploy", {
       sources: [s3Deployment.Source.asset("../public")],
       destinationBucket: bucket,
     });
     //cloudfront (aws cdn)
-    new cloudfront.Distribution(this, "lollydistribution", {
-      defaultBehavior: { origin: new origins.S3Origin(bucket) },
+    const distribution = new cloudfront.Distribution(
+      this,
+      "lollydistribution",
+      {
+        defaultBehavior: { origin: new origins.S3Origin(bucket) },
+      }
+    );
+    const repoName = "eventDriven-lollyApp";
+
+    const repo = commits.Repository.fromRepositoryName(
+      this,
+      "ImportedRepo",
+      repoName
+    );
+
+    const sourceArtifact = new codepipeline.Artifact();
+    const cloudAssemblyArtifact = new codepipeline.Artifact();
+    const pipeline = new pipelines.CdkPipeline(this, "Pipeline", {
+      pipelineName: "MyAppPipeline",
+      cloudAssemblyArtifact: cloudAssemblyArtifact as any,
+
+      // Here we use CodeCommit instead of Github
+      sourceAction: new codepipeline_actions.CodeCommitSourceAction({
+        actionName: "CodeCommit_Source",
+        repository: repo as any,
+        
+        output: sourceArtifact,
+      }) as any,
+
+      synthAction: pipelines.SimpleSynthAction.standardNpmSynth({
+        sourceArtifact: sourceArtifact as any,
+        cloudAssemblyArtifact: cloudAssemblyArtifact as any,
+        // Use this if you need a build step (if you're not using ts-node
+        // or if you have TypeScript Lambdas that need to be compiled).
+        buildCommand: "npm run build && npm run test",
+      }),
     });
 
     // creating api

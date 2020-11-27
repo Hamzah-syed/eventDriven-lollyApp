@@ -6,7 +6,6 @@ import { lollyEventDrivenStack } from "../lib/lollyEventDriven";
 
 const app = new cdk.App();
 new lollyEventDrivenStack(app, "lollyEventDrivenStack", {
-  env: {
-    region: "us-east-2",
-  },
+  env: { region: "us-east-2" },
 });
+app.synth();
