@@ -30,7 +30,7 @@ export class lollyEventDrivenStack extends cdk.Stack {
       websiteIndexDocument: "index.html",
     });
 
-    //s3 bucket deployment and specifying that where is the content
+    //s3 bucket deployment and specifinyg that where is the content
     new s3Deployment.BucketDeployment(this, "vlolly-buketdeploy", {
       sources: [s3Deployment.Source.asset("../public")],
       destinationBucket: bucket,
@@ -43,35 +43,83 @@ export class lollyEventDrivenStack extends cdk.Stack {
         defaultBehavior: { origin: new origins.S3Origin(bucket) },
       }
     );
-    const repoName = "eventDriven-lollyApp";
 
-    const repo = commits.Repository.fromRepositoryName(
-      this,
-      "ImportedRepo",
-      repoName
-    );
+    // Artifact from source stage
+    const sourceOutput = new codepipeline.Artifact();
 
-    const sourceArtifact = new codepipeline.Artifact();
-    const cloudAssemblyArtifact = new codepipeline.Artifact();
-    const pipeline = new pipelines.CdkPipeline(this, "Pipeline", {
-      pipelineName: "MyAppPipeline",
-      cloudAssemblyArtifact: cloudAssemblyArtifact as any,
+    // Artifact from build stage
+    const CDKOutput = new codepipeline.Artifact();
 
-      // Here we use CodeCommit instead of Github
-      sourceAction: new codepipeline_actions.CodeCommitSourceAction({
-        actionName: "CodeCommit_Source",
-        repository: repo as any,
-        
-        output: sourceArtifact,
-      }) as any,
-
-      synthAction: pipelines.SimpleSynthAction.standardNpmSynth({
-        sourceArtifact: sourceArtifact as any,
-        cloudAssemblyArtifact: cloudAssemblyArtifact as any,
-        // Use this if you need a build step (if you're not using ts-node
-        // or if you have TypeScript Lambdas that need to be compiled).
-        buildCommand: "npm run build && npm run test",
+    //Code build action, Here you will define a complete build
+    const cdkBuild = new codeBuild.PipelineProject(this, "CdkBuild", {
+      buildSpec: codeBuild.BuildSpec.fromObject({
+        version: "0.2",
+        phases: {
+          install: {
+            "runtime-versions": {
+              nodejs: 12,
+            },
+            commands: ["cd cdk", "npm i npm@latest -g", "npm install"],
+          },
+          build: {
+            commands: ["npm run build", "npm run cdk synth -- -o dist"],
+          },
+        },
+        artifacts: {
+          "base-directory": "CI_CD_pipline_update_cdk_template/dist", ///outputting our generated JSON CloudFormation files to the dist directory
+          files: [`${this.stackName}.template.json`],
+        },
       }),
+      environment: {
+        buildImage: codeBuild.LinuxBuildImage.STANDARD_3_0, ///BuildImage version 3 because we are using nodejs environment 12
+      },
+    });
+
+    ///Define a pipeline
+    const pipline = new codepipeline.Pipeline(this, "LollyPipeline", {
+      crossAccountKeys: false, //Pipeline construct creates an AWS Key Management Service (AWS KMS) which cost $1/month. this will save your $1.
+      restartExecutionOnUpdate: true, //Indicates whether to rerun the AWS CodePipeline pipeline after you update it.
+    });
+
+    ///Adding stages to pipeline
+
+    //First Stage Source
+    pipline.addStage({
+      stageName: "Source",
+      actions: [
+        new codepipeline_actions.GitHubSourceAction({
+          actionName: "Checkout",
+          owner: "hamzah-syed",
+          repo: "eventDriven-lollyApp",
+          oauthToken: cdk.SecretValue.secretsManager("github-token") as any, ///create token on github and save it on aws secret manager
+          output: sourceOutput, ///Output will save in the sourceOutput Artifact
+          branch: "master", ///Branch of your repo
+        }),
+      ],
+    });
+
+    pipline.addStage({
+      stageName: "Build",
+      actions: [
+        new codepipeline_actions.CodeBuildAction({
+          actionName: "cdkBuild",
+          project: cdkBuild,
+          input: sourceOutput,
+          outputs: [CDKOutput],
+        }),
+      ],
+    });
+
+    pipline.addStage({
+      stageName: "DeployCDK",
+      actions: [
+        new codepipeline_actions.CloudFormationCreateUpdateStackAction({
+          actionName: "AdministerPipeline",
+          templatePath: CDKOutput.atPath(`${this.stackName}.template.json`), ///Input artifact with the CloudFormation template to deploy
+          stackName: this.stackName, ///Name of stack
+          adminPermissions: true,
+        }),
+      ],
     });
 
     // creating api
